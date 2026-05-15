@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tu Nombre — Portafolio</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; background: #fff; overflow: hidden; }
+  body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+  canvas { display: block; position: fixed; top: 0; left: 0; }
+
+  #header {
+    position: fixed;
+    top: 18px; left: 22px;
+    font-size: 8.5px;
+    font-weight: 400;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: #111;
+    line-height: 1.6;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  #badge {
+    position: fixed;
+    top: 14px; right: 18px;
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    background: #111; color: #fff;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: -.5px;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 10;
+    cursor: default;
+    /* Cambia el número por tu nombre o iniciales */
+  }
+
+  #tooltip {
+    position: fixed;
+    display: none;
+    background: #fff;
+    border: 0.5px solid #ccc;
+    padding: 8px 12px;
+    font-size: 9px;
+    letter-spacing: .06em;
+    color: #333;
+    pointer-events: none;
+    z-index: 20;
+    max-width: 180px;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     PERSONALIZA AQUÍ:
+     Cambia el texto del header y el badge
+═══════════════════════════════════════════ -->
+<div id="header">
+  Tu Nombre<br>
+  Portafolio — Interdisciplinar
+</div>
+
+<div id="badge">●</div>
+<!-- Puedes poner tus iniciales en el badge, ej: <div id="badge">AN</div> -->
+
+<div id="tooltip"></div>
+<canvas id="cv"></canvas>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  PERSONALIZA TUS NODOS AQUÍ
+//  Cada entrada es: { label, desc, x, y }
+//  x e y son posiciones en fracción de pantalla (0.0 a 1.0)
+//  Puedes agregar, quitar o mover nodos libremente
+// ═══════════════════════════════════════════════════════════
+const NODES = [
+  { label: 'Videos',                                    desc: '',  x: 0.43, y: 0.13 },
+  { label: 'Transcripts',                               desc: '',  x: 0.57, y: 0.13 },
+  { label: 'Platform Traces',                           desc: '',  x: 0.61, y: 0.17 },
+  { label: 'Photos',                                    desc: '',  x: 0.71, y: 0.14 },
+  { label: 'Curators',                                  desc: '',  x: 0.85, y: 0.12 },
+  { label: 'Speculative Fiction / Fiction / Non-Fiction', desc: '', x: 0.29, y: 0.22 },
+  { label: 'Spatial Data — Maps / Heatmaps',           desc: '',  x: 0.27, y: 0.34 },
+  { label: 'Playlists',                                 desc: '',  x: 0.57, y: 0.33 },
+  { label: 'Diagrams, Graphs, Dioramas',               desc: '',  x: 0.72, y: 0.33 },
+  { label: 'Receipts',                                  desc: '',  x: 0.80, y: 0.37 },
+  { label: 'Short Form Video',                          desc: '',  x: 0.87, y: 0.37 },
+  { label: 'Artworks',                                  desc: '',  x: 0.11, y: 0.43 },
+  { label: 'Websites',                                  desc: '',  x: 0.17, y: 0.45 },
+  { label: 'Timelines',                                 desc: '',  x: 0.11, y: 0.54 },
+  { label: 'Interviews',                                desc: '',  x: 0.35, y: 0.54 },
+  { label: 'TV Series',                                 desc: '',  x: 0.36, y: 0.57 },
+  { label: 'Gadgets',                                   desc: '',  x: 0.38, y: 0.59 },
+  { label: 'Reviews',                                   desc: '',  x: 0.47, y: 0.57 },
+  { label: 'Clips',                                     desc: '',  x: 0.54, y: 0.57 },
+  { label: 'Movie Recommendations',                     desc: '',  x: 0.87, y: 0.64 },
+  { label: 'Lists + Names / Contacts',                 desc: '',  x: 0.81, y: 0.68 },
+  { label: 'Links — Internet Archive / Are.na / Open PDFs', desc: '', x: 0.83, y: 0.70 },
+  { label: 'Mood / Image Boards',                      desc: '',  x: 0.12, y: 0.62 },
+  { label: 'Book Recommendations',                     desc: '',  x: 0.15, y: 0.65 },
+  { label: 'Screenshots / Poor Images',                desc: '',  x: 0.88, y: 0.81 },
+  { label: 'Personal Accounts',                        desc: '',  x: 0.16, y: 0.75 },
+  { label: 'Memes',                                    desc: '',  x: 0.25, y: 0.77 },
+  { label: 'Texts',                                    desc: '',  x: 0.30, y: 0.81 },
+  { label: 'Quotes',                                   desc: '',  x: 0.51, y: 0.84 },
+  { label: 'Voicenotes / Messages',                    desc: '',  x: 0.57, y: 0.88 },
+  { label: 'Movies',                                   desc: '',  x: 0.76, y: 0.88 },
+  { label: 'Songs',                                    desc: '',  x: 0.81, y: 0.95 },
+  { label: 'Video Essays',                             desc: '',  x: 0.87, y: 0.95 },
+];
+
+// ═══════════════════════════════════════════════════════════
+//  AJUSTA LA DENSIDAD DE LAS CONEXIONES
+//  CONNECTION_DISTANCE: fracción de la pantalla (0.0–1.0)
+//  Más alto = más líneas conectadas
+// ═══════════════════════════════════════════════════════════
+const CONNECTION_DISTANCE = 0.38;
+
+// ═══════════════════════════════════════════════════════════
+//  VELOCIDAD DE DERIVA (flotar)
+//  Más bajo = más lento y suave
+// ═══════════════════════════════════════════════════════════
+const DRIFT_SPEED  = 0.003;
+const DRIFT_AMOUNT = 8; // píxeles máx de movimiento
+
+// ─── Engine ──────────────────────────────────────────────
+const cv  = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+const tip = document.getElementById('tooltip');
+let W, H, tick = 0, hovered = -1;
+
+const nodes = NODES.map((n, i) => ({
+  ...n,
+  phase : Math.random() * Math.PI * 2,
+  phaseY: Math.random() * Math.PI * 2,
+}));
+
+function buildEdges() {
+  const out = [];
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const dx = (nodes[i].x - nodes[j].x);
+      const dy = (nodes[i].y - nodes[j].y) * (H / W); // aspect correction
+      if (Math.sqrt(dx*dx + dy*dy) < CONNECTION_DISTANCE) out.push([i, j]);
+    }
+  }
+  return out;
+}
+
+let edges = [];
+
+function nodePos(n) {
+  return {
+    x: n.x * W + Math.sin(tick * DRIFT_SPEED + n.phase)  * DRIFT_AMOUNT,
+    y: n.y * H + Math.cos(tick * DRIFT_SPEED + n.phaseY) * DRIFT_AMOUNT,
+  };
+}
+
+function draw() {
+  tick++;
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, W, H);
+
+  // Lines
+  edges.forEach(([i, j]) => {
+    const a = nodePos(nodes[i]);
+    const b = nodePos(nodes[j]);
+    const hot = hovered === i || hovered === j;
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.lineTo(b.x, b.y);
+    ctx.strokeStyle = hot ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0.1)';
+    ctx.lineWidth   = hot ? 0.7 : 0.4;
+    ctx.stroke();
+  });
+
+  // Labels
+  nodes.forEach((n, i) => {
+    const p   = nodePos(n);
+    const hot = hovered === i;
+    ctx.font        = `${hot ? 10 : 9}px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
+    ctx.textAlign   = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle   = hot ? '#000' : '#1a1a1a';
+    ctx.fillText(n.label, p.x + 5, p.y);
+
+    // Dot
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, hot ? 2.2 : 1.5, 0, Math.PI * 2);
+    ctx.fillStyle = hot ? '#000' : '#444';
+    ctx.fill();
+
+    // Underline on hover
+    if (hot) {
+      const tw = ctx.measureText(n.label).width;
+      ctx.beginPath();
+      ctx.moveTo(p.x + 5, p.y + 7);
+      ctx.lineTo(p.x + 5 + tw, p.y + 7);
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth   = 0.5;
+      ctx.stroke();
+    }
+  });
+
+  requestAnimationFrame(draw);
+}
+
+// Mouse
+cv.addEventListener('mousemove', e => {
+  const rect = cv.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  hovered = -1;
+
+  for (let i = 0; i < nodes.length; i++) {
+    const p  = nodePos(nodes[i]);
+    ctx.font = `9px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
+    const tw = ctx.measureText(nodes[i].label).width;
+    if (mx >= p.x && mx <= p.x + tw + 8 && my >= p.y - 9 && my <= p.y + 9) {
+      hovered = i;
+      break;
+    }
+  }
+
+  cv.style.cursor = hovered >= 0 ? 'pointer' : 'default';
+
+  if (hovered >= 0 && nodes[hovered].desc) {
+    tip.textContent  = nodes[hovered].desc;
+    tip.style.display = 'block';
+    tip.style.left   = (mx + 14) + 'px';
+    tip.style.top    = (my - 10) + 'px';
+  } else {
+    tip.style.display = 'none';
+  }
+});
+
+cv.addEventListener('mouseleave', () => {
+  hovered = -1;
+  tip.style.display = 'none';
+  cv.style.cursor = 'default';
+});
+
+// Click — puedes personalizar esta función para abrir una URL
+cv.addEventListener('click', () => {
+  if (hovered >= 0) {
+    const n = nodes[hovered];
+    // Ejemplo: window.location.href = '/proyectos/' + n.label.toLowerCase();
+    console.log('Nodo clickeado:', n.label);
+  }
+});
+
+function resize() {
+  W = window.innerWidth;
+  H = window.innerHeight;
+  cv.width  = W;
+  cv.height = H;
+  edges = buildEdges();
+}
+
+window.addEventListener('resize', resize);
+resize();
+draw();
+</script>
+</body>
+</html>
