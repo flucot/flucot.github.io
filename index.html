@@ -326,7 +326,7 @@ cv.addEventListener('mousemove', e => {
     }
   }
 
-  cv.style.cursor = hovered >= 0 ? 'pointer' : 'default';
+cv.style.cursor = (hovered >= 0 && NODE_URLS[nodes[hovered].id]) ? 'pointer' : 'default';
 
   if (hovered >= 0 && nodes[hovered].desc) {
     tip.textContent = nodes[hovered].desc;
@@ -346,12 +346,35 @@ cv.addEventListener('mouseleave', () => {
 });
 
 
+// ═══════════════════════════════════════════
+// URLs POR NODO — agrega aquí las rutas de cada sección
+// ═══════════════════════════════════════════
+const NODE_URLS = {
+  'CV':    'cv.html',
+  'ORCID': 'https://orcid.org/0009-0000-5484-3984',
+  // Descomenta y completa cuando tengas las páginas listas:
+  // 'biography':    'biography.html',
+  // 'papers':       'papers.html',
+  // 'essays':       'essays.html',
+  // 'conferences':  'conferences.html',
+  // 'exhibitions':  'exhibitions.html',
+  // 'photos':       'photos.html',
+  // 'fiction':      'fiction.html',
+  // 'fieldwork':    'fieldwork.html',
+  // 'interviews':   'interviews.html',
+  // 'awards':       'awards.html',
+  // 'politics':     'politics.html',
+  // 'AI':           'ai.html',
+  // 'latin-america':'latin-america.html',
+};
+
 cv.addEventListener('click', () => {
   if (hovered >= 0) {
-    const n = nodes[hovered];
-    console.log('Nodo clickeado:', n.label);
-    // Aquí puedes agregar redirecciones o acciones específicas
-    alert(`Has hecho clic en: ${n.label}\n${n.desc}`);
+    const url = NODE_URLS[nodes[hovered].id];
+    if (url) {
+      if (url.startsWith('http')) window.open(url, '_blank');
+      else window.location.href = url;
+    }
   }
 });
 
