@@ -4,32 +4,32 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Francisca Luco — Dossier</title>
-
+ 
 <style>
   * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
   }
-
+ 
   html, body {
     width: 100%;
     height: 100%;
     background: #fff;
     overflow: hidden;
   }
-
+ 
   body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   }
-
+ 
   canvas {
     display: block;
     position: fixed;
     top: 0;
     left: 0;
   }
-
+ 
   #header {
     position: fixed;
     top: 18px;
@@ -43,7 +43,7 @@
     pointer-events: none;
     z-index: 10;
   }
-
+ 
   #badge {
     position: fixed;
     top: 14px;
@@ -62,7 +62,7 @@
     z-index: 10;
     cursor: default;
   }
-
+ 
   #tooltip {
     position: fixed;
     display: none;
@@ -79,149 +79,129 @@
   }
 </style>
 </head>
-
+ 
 <body>
-
+ 
 <div id="header">
   FRANCISCA LUCO<br>
   Portfolio — DIGITAL DOSSIER
 </div>
-
+ 
 <div id="badge">●</div>
-
+ 
 <div id="tooltip"></div>
-
+ 
 <canvas id="cv"></canvas>
-
+ 
 <script>
-
+ 
 // ═══════════════════════════════════════════
 // TUS 15 NODOS PERSONALIZADOS
 // ═══════════════════════════════════════════
-
+ 
 const NODES = [
-  { id: 'biography', label: 'biography', desc: 'Breve perfil académico y líneas de interés.', x: 0.15, y: 0.20 },
-  { id: 'CV', label: 'CV', desc: 'Currículum Vitae tradicional en formato descargable.', x: 0.12, y: 0.42 },
-  { id: 'ORCID', label: 'ORCID', desc: 'Identificador digital de investigador científico.', x: 0.14, y: 0.65 },
-  { id: 'awards', label: 'awards', desc: 'Reconocimientos, fondos y financiamientos obtenidos.', x: 0.28, y: 0.80 },
-  { id: 'politics', label: 'politics', desc: 'Análisis político, gobernanza y esferas institucionales.', x: 0.45, y: 0.15 },
-  { id: 'AI', label: 'AI', desc: 'Gobernanza de algoritmos, ética e impacto sociotécnico.', x: 0.68, y: 0.18 },
-  { id: 'latin-america', label: 'latin-america', desc: 'Enfoques, dinámicas y perspectivas desde el Sur Global.', x: 0.52, y: 0.35 },
-  { id: 'fieldwork', label: 'fieldwork', desc: 'Investigación cualitativa y aproximación al terreno.', x: 0.38, y: 0.52 },
-  { id: 'interviews', label: 'interviews', desc: 'Registros, testimonios y metodologías de entrevista.', x: 0.60, y: 0.48 },
-  { id: 'papers', label: 'papers', desc: 'Publicaciones científicas y artículos académicos de investigación.', x: 0.35, y: 0.70 },
-  { id: 'essays', label: 'essays', desc: 'Ensayos de análisis y textos académicos universitarios.', x: 0.58, y: 0.68 },
-  { id: 'conferences', label: 'conferences', desc: 'Ponencias, pósters y participaciones en congresos.', x: 0.48, y: 0.88 },
-  { id: 'exhibitions', label: 'exhibitions', desc: 'Proyectos expositivos y colaboraciones curatoriales/artísticas.', x: 0.85, y: 0.28 },
-  { id: 'photos', label: 'photos', desc: 'Fotografía analógica de calle, series y registro químico.', x: 0.88, y: 0.52 },
-  { id: 'fiction', label: 'fiction', desc: 'Cuentos caseros, narrativas sueltas y ejercicios de ficción.', x: 0.80, y: 0.78 }
+  { id: 'biography',    label: 'biography',    desc: 'Breve perfil académico y líneas de interés.',                        x: 0.15, y: 0.20 },
+  { id: 'CV',           label: 'CV',           desc: 'Currículum Vitae tradicional en formato descargable.',               x: 0.12, y: 0.42 },
+  { id: 'ORCID',        label: 'ORCID',        desc: 'Identificador digital de investigador científico.',                  x: 0.14, y: 0.65 },
+  { id: 'awards',       label: 'awards',       desc: 'Reconocimientos, fondos y financiamientos obtenidos.',               x: 0.28, y: 0.80 },
+  { id: 'politics',     label: 'politics',     desc: 'Análisis político, gobernanza y esferas institucionales.',           x: 0.45, y: 0.15 },
+  { id: 'AI',           label: 'AI',           desc: 'Gobernanza de algoritmos, ética e impacto sociotécnico.',            x: 0.68, y: 0.18 },
+  { id: 'latin-america',label: 'latin-america',desc: 'Enfoques, dinámicas y perspectivas desde el Sur Global.',           x: 0.52, y: 0.35 },
+  { id: 'fieldwork',    label: 'fieldwork',    desc: 'Investigación cualitativa y aproximación al terreno.',               x: 0.38, y: 0.52 },
+  { id: 'interviews',   label: 'interviews',   desc: 'Registros, testimonios y metodologías de entrevista.',               x: 0.60, y: 0.48 },
+  { id: 'papers',       label: 'papers',       desc: 'Publicaciones científicas y artículos académicos de investigación.', x: 0.35, y: 0.70 },
+  { id: 'essays',       label: 'essays',       desc: 'Ensayos de análisis y textos académicos universitarios.',            x: 0.58, y: 0.68 },
+  { id: 'conferences',  label: 'conferences',  desc: 'Ponencias, pósters y participaciones en congresos.',                 x: 0.48, y: 0.88 },
+  { id: 'exhibitions',  label: 'exhibitions',  desc: 'Proyectos expositivos y colaboraciones curatoriales/artísticas.',    x: 0.85, y: 0.28 },
+  { id: 'photos',       label: 'photos',       desc: 'Fotografía analógica de calle, series y registro químico.',          x: 0.88, y: 0.52 },
+  { id: 'fiction',      label: 'fiction',      desc: 'Cuentos caseros, narrativas sueltas y ejercicios de ficción.',       x: 0.80, y: 0.78 }
 ];
-
-
+ 
+ 
 // ═══════════════════════════════════════════
-// REGLAS DE CONEXIÓN ENTRE NODOS (CORREGIDAS)
+// REGLAS DE CONEXIÓN ENTRE NODOS
 // ═══════════════════════════════════════════
-
+ 
 function explicitShouldConnect(id1, id2) {
-  // Normalizar: ordenar alfabéticamente para que el orden no importe
   const a = id1 < id2 ? id1 : id2;
   const b = id1 < id2 ? id2 : id1;
-
-  // --- TUS NUEVAS REGLAS DE CONEXIÓN (AHORA BIDIRECCIONALES) ---
-
-  // CV conectado con biography (bio), AI (IA), papers e interviews
+ 
   if (a === 'biography' && b === 'CV') return true;
   if (a === 'AI' && b === 'CV') return true;
   if (a === 'CV' && b === 'papers') return true;
   if (a === 'CV' && b === 'interviews') return true;
-
-  // ✅ ORCID conectado con biography (bio) y con interviews (CORREGIDO)
+ 
   if ((a === 'biography' && b === 'ORCID') || (a === 'ORCID' && b === 'biography')) return true;
-  if ((a === 'papers' && b === 'ORCID') || (a === 'ORCID' && b === 'papers')) return true;
-  if ((a === 'CV' && b === 'ORCID') || (a === 'ORCID' && b === 'CV')) return true;
-
-  // photo (fotos) conectado con essays (ensayo), politics y fieldwork
+  if ((a === 'papers' && b === 'ORCID')    || (a === 'ORCID' && b === 'papers'))    return true;
+  if ((a === 'CV' && b === 'ORCID')        || (a === 'ORCID' && b === 'CV'))        return true;
+ 
   if (a === 'essays' && b === 'photos') return true;
   if (a === 'photos' && b === 'politics') return true;
   if (a === 'fieldwork' && b === 'photos') return true;
-
-  // conferences conectado con interviews y ORCID
+ 
   if (a === 'conferences' && b === 'interviews') return true;
   if (a === 'conferences' && b === 'ORCID') return true;
   if (a === 'CV' && b === 'conferences') return true;
-
-  // exhibitions conectado con fieldwork y con AI (IA)
+ 
   if (a === 'exhibitions' && b === 'fieldwork') return true;
   if (a === 'AI' && b === 'exhibitions') return true;
   if (a === 'CV' && b === 'exhibitions') return true;
-
-  // papers conectado con IA (AI), CV, fieldwork e interviews
+ 
   if (a === 'AI' && b === 'papers') return true;
   if (a === 'fieldwork' && b === 'papers') return true;
   if (a === 'interviews' && b === 'papers') return true;
-
-  // essays conectado con politics, fieldwork y explícitamente SIN IA (AI)
-  if (a === 'AI' && b === 'essays') return false; // Prohibición estricta con IA
+ 
+  if (a === 'AI' && b === 'essays') return false;
   if (a === 'essays' && b === 'politics') return true;
   if (a === 'essays' && b === 'fieldwork') return true;
-
-  // biography e intereses globales (politics y latin-america)
-  // CORREGIDO: biography se conecta con todo EXCEPTO con lo que explícitamente no debe
+ 
   if (a === 'biography') return true;
-  
-  // politics se conecta con casi todo excepto ORCID
   if ((a === 'politics' || b === 'politics') && a !== 'ORCID' && b !== 'ORCID') return true;
-  
-  // latin-america se conecta con casi todo excepto ORCID
   if ((a === 'latin-america' || b === 'latin-america') && a !== 'ORCID' && b !== 'ORCID') return true;
-
-  // awards conectado con photo y CV (no con conferences)
+ 
   if (a === 'awards' && b === 'conferences') return false;
   if (a === 'awards' && b === 'photos') return true;
   if (a === 'CV' && b === 'awards') return true;
-
-  // fiction (eliminada la conexión con conferences)
+ 
   if (a === 'conferences' && b === 'fiction') return false;
   if (a === 'fiction' && b === 'photos') return true;
   if (a === 'essays' && b === 'fiction') return true;
-
-  // Conexiones estructurales base por proximidad/lógica
+ 
   if (a === 'fieldwork' && b === 'interviews') return true;
   if (a === 'AI' && b === 'interviews') return true;
   if (a === 'essays' && b === 'papers') return true;
   if (a === 'conferences' && b === 'papers') return true;
-
+ 
   return false;
 }
-
-
+ 
+ 
 // ═══════════════════════════════════════════
 // CONFIG DE MOVIMIENTO FLOTANTE
 // ═══════════════════════════════════════════
-
+ 
 const DRIFT_SPEED  = 0.045;
 const DRIFT_AMOUNT = 8;
-
-
+ 
+ 
 // ═══════════════════════════════════════════
 // ENGINE (MOTOR VISUAL)
 // ═══════════════════════════════════════════
-
+ 
 const cv  = document.getElementById('cv');
 const ctx = cv.getContext('2d');
 const tip = document.getElementById('tooltip');
-
+ 
 let W, H;
 let tick = 0;
 let hovered = -1;
-
+ 
 const nodes = NODES.map(n => ({
   ...n,
-  phase: Math.random() * Math.PI * 2,
+  phase:  Math.random() * Math.PI * 2,
   phaseY: Math.random() * Math.PI * 2,
 }));
-
-
+ 
 function buildEdges() {
   const out = [];
   for (let i = 0; i < nodes.length; i++) {
@@ -233,56 +213,53 @@ function buildEdges() {
   }
   return out;
 }
-
+ 
 let edges = [];
-
-
+ 
 function nodePos(n) {
   return {
-    x: n.x * W + Math.sin(tick * DRIFT_SPEED + n.phase) * DRIFT_AMOUNT,
+    x: n.x * W + Math.sin(tick * DRIFT_SPEED + n.phase)  * DRIFT_AMOUNT,
     y: n.y * H + Math.cos(tick * DRIFT_SPEED + n.phaseY) * DRIFT_AMOUNT
   };
 }
-
-
+ 
 function draw() {
   tick++;
   ctx.clearRect(0, 0, W, H);
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, W, H);
-
+ 
   // ─── Líneas de Conexión ───────────────────
   edges.forEach(([i, j]) => {
     const a = nodePos(nodes[i]);
     const b = nodePos(nodes[j]);
     const hot = hovered === i || hovered === j;
-
+ 
     ctx.beginPath();
     ctx.moveTo(a.x, a.y);
     ctx.lineTo(b.x, b.y);
-
     ctx.strokeStyle = hot ? 'rgba(0,0,0,0.40)' : 'rgba(0,0,0,0.10)';
     ctx.lineWidth = hot ? 1.2 : 0.65;
     ctx.stroke();
   });
-
+ 
   // ─── Etiquetas y Textos ───────────────────
   nodes.forEach((n, i) => {
     const p = nodePos(n);
     const hot = hovered === i;
-
+ 
     ctx.font = `${hot ? 15 : 13}px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = hot ? '#000' : '#1a1a1a';
     ctx.fillText(n.label, p.x + 7, p.y);
-
+ 
     // ─── Puntos de los Nodos ──────────────────
     ctx.beginPath();
     ctx.arc(p.x, p.y, hot ? 2.8 : 2.2, 0, Math.PI * 2);
     ctx.fillStyle = hot ? '#000' : '#444';
     ctx.fill();
-
+ 
     // ─── Subrayado al pasar el Mouse ──────────
     if (hot) {
       const tw = ctx.measureText(n.label).width;
@@ -290,69 +267,23 @@ function draw() {
       ctx.moveTo(p.x + 7, p.y + 10);
       ctx.lineTo(p.x + 7 + tw, p.y + 10);
       ctx.strokeStyle = '#000';
-      ctx.lineWidth = 0.8;
+      ctx.lineWidth = NODE_URLS[n.id] ? 1.4 : 0.8;
       ctx.stroke();
     }
   });
-
+ 
   requestAnimationFrame(draw);
 }
-
-
+ 
+ 
 // ═══════════════════════════════════════════
-// MOUSE e INTERACCIÓN
+// URLs POR NODO — declarado ANTES del mousemove
 // ═══════════════════════════════════════════
-
-cv.addEventListener('mousemove', e => {
-  const rect = cv.getBoundingClientRect();
-  const mx = e.clientX - rect.left;
-  const my = e.clientY - rect.top;
-
-  hovered = -1;
-
-  for (let i = 0; i < nodes.length; i++) {
-    const p = nodePos(nodes[i]);
-    ctx.font = `13px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
-    const tw = ctx.measureText(nodes[i].label).width;
-
-    if (
-      mx >= p.x &&
-      mx <= p.x + tw + 10 &&
-      my >= p.y - 12 &&
-      my <= p.y + 12
-    ) {
-      hovered = i;
-      break;
-    }
-  }
-
-cv.style.cursor = (hovered >= 0 && NODE_URLS[nodes[hovered].id]) ? 'pointer' : 'default';
-
-  if (hovered >= 0 && nodes[hovered].desc) {
-    tip.textContent = nodes[hovered].desc;
-    tip.style.display = 'block';
-    tip.style.left = (mx + 14) + 'px';
-    tip.style.top = (my - 10) + 'px';
-  } else {
-    tip.style.display = 'none';
-  }
-});
-
-
-cv.addEventListener('mouseleave', () => {
-  hovered = -1;
-  tip.style.display = 'none';
-  cv.style.cursor = 'default';
-});
-
-
-// ═══════════════════════════════════════════
-// URLs POR NODO — agrega aquí las rutas de cada sección
-// ═══════════════════════════════════════════
+ 
 const NODE_URLS = {
   'CV':    'cv.html',
   'ORCID': 'https://orcid.org/0009-0000-5484-3984',
-  // Descomenta y completa cuando tengas las páginas listas:
+  // Descomenta cuando tengas las páginas listas:
   // 'biography':    'biography.html',
   // 'papers':       'papers.html',
   // 'essays':       'essays.html',
@@ -367,7 +298,53 @@ const NODE_URLS = {
   // 'AI':           'ai.html',
   // 'latin-america':'latin-america.html',
 };
-
+ 
+ 
+// ═══════════════════════════════════════════
+// MOUSE e INTERACCIÓN
+// ═══════════════════════════════════════════
+ 
+cv.addEventListener('mousemove', e => {
+  const rect = cv.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+ 
+  hovered = -1;
+ 
+  for (let i = 0; i < nodes.length; i++) {
+    const p = nodePos(nodes[i]);
+    ctx.font = `13px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
+    const tw = ctx.measureText(nodes[i].label).width;
+ 
+    if (
+      mx >= p.x &&
+      mx <= p.x + tw + 10 &&
+      my >= p.y - 12 &&
+      my <= p.y + 12
+    ) {
+      hovered = i;
+      break;
+    }
+  }
+ 
+  cv.style.cursor = (hovered >= 0 && NODE_URLS[nodes[hovered].id]) ? 'pointer' : 'default';
+ 
+  if (hovered >= 0 && nodes[hovered].desc) {
+    tip.textContent = nodes[hovered].desc;
+    tip.style.display = 'block';
+    tip.style.left = (mx + 14) + 'px';
+    tip.style.top  = (my - 10) + 'px';
+  } else {
+    tip.style.display = 'none';
+  }
+});
+ 
+cv.addEventListener('mouseleave', () => {
+  hovered = -1;
+  tip.style.display = 'none';
+  cv.style.cursor = 'default';
+});
+ 
 cv.addEventListener('click', () => {
   if (hovered >= 0) {
     const url = NODE_URLS[nodes[hovered].id];
@@ -377,39 +354,39 @@ cv.addEventListener('click', () => {
     }
   }
 });
-
-
+ 
+ 
 // ═══════════════════════════════════════════
 // AJUSTE DE PANTALLA (RETINA / HIGH DPI)
 // ═══════════════════════════════════════════
-
+ 
 function resize() {
   W = window.innerWidth;
   H = window.innerHeight;
-
+ 
   const dpr = window.devicePixelRatio || 1;
-
+ 
   cv.width  = W * dpr;
   cv.height = H * dpr;
-
+ 
   cv.style.width  = W + 'px';
   cv.style.height = H + 'px';
-
+ 
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
+ 
   edges = buildEdges();
 }
-
+ 
 window.addEventListener('resize', resize);
-
-
+ 
+ 
 // ═══════════════════════════════════════════
 // INICIALIZACIÓN
 // ═══════════════════════════════════════════
-
+ 
 resize();
 draw();
-
+ 
 </script>
 </body>
 </html>
