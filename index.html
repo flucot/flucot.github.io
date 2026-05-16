@@ -119,14 +119,15 @@ const NODES = [
 
 
 // ═══════════════════════════════════════════
-// REGLAS DE CONEXIÓN ENTRE NODOS
+// REGLAS DE CONEXIÓN ENTRE NODOS (CORREGIDAS)
 // ═══════════════════════════════════════════
 
 function explicitShouldConnect(id1, id2) {
+  // Normalizar: ordenar alfabéticamente para que el orden no importe
   const a = id1 < id2 ? id1 : id2;
   const b = id1 < id2 ? id2 : id1;
 
-  // --- TUS NUEVAS REGLAS DE CONEXIÓN ---
+  // --- TUS NUEVAS REGLAS DE CONEXIÓN (AHORA BIDIRECCIONALES) ---
 
   // CV conectado con biography (bio), AI (IA), papers e interviews
   if (a === 'biography' && b === 'CV') return true;
@@ -134,9 +135,9 @@ function explicitShouldConnect(id1, id2) {
   if (a === 'CV' && b === 'papers') return true;
   if (a === 'CV' && b === 'interviews') return true;
 
-  // ORCID conectado con biography (bio) y con interviews
-  if (a === 'biography' && b === 'ORCID') return true;
-  if (a === 'interviews' && b === 'ORCID') return true;
+  // ✅ ORCID conectado con biography (bio) y con interviews (CORREGIDO)
+  if ((a === 'biography' && b === 'ORCID') || (a === 'ORCID' && b === 'biography')) return true;
+  if ((a === 'interviews' && b === 'ORCID') || (a === 'ORCID' && b === 'interviews')) return true;
 
   // photo (fotos) conectado con essays (ensayo), politics y fieldwork
   if (a === 'essays' && b === 'photos') return true;
@@ -146,12 +147,12 @@ function explicitShouldConnect(id1, id2) {
   // conferences conectado con interviews y ORCID
   if (a === 'conferences' && b === 'interviews') return true;
   if (a === 'conferences' && b === 'ORCID') return true;
-  if (a === 'CV' && b === 'conferences') return true; // (Requisito previo de CV)
+  if (a === 'CV' && b === 'conferences') return true;
 
   // exhibitions conectado con fieldwork y con AI (IA)
   if (a === 'exhibitions' && b === 'fieldwork') return true;
   if (a === 'AI' && b === 'exhibitions') return true;
-  if (a === 'CV' && b === 'exhibitions') return true; // (Requisito previo de CV)
+  if (a === 'CV' && b === 'exhibitions') return true;
 
   // papers conectado con IA (AI), CV, fieldwork e interviews
   if (a === 'AI' && b === 'papers') return true;
@@ -163,10 +164,15 @@ function explicitShouldConnect(id1, id2) {
   if (a === 'essays' && b === 'politics') return true;
   if (a === 'essays' && b === 'fieldwork') return true;
 
-  // biography e intereses globales (politics y latin-america se conectan con casi todo excepto ORCID)
+  // biography e intereses globales (politics y latin-america)
+  // CORREGIDO: biography se conecta con todo EXCEPTO con lo que explícitamente no debe
   if (a === 'biography') return true;
-  if ((a === 'politics' || b === 'politics') && (a !== 'ORCID' && b !== 'ORCID')) return true;
-  if ((a === 'latin-america' || b === 'latin-america') && (a !== 'ORCID' && b !== 'ORCID')) return true;
+  
+  // politics se conecta con casi todo excepto ORCID
+  if ((a === 'politics' || b === 'politics') && a !== 'ORCID' && b !== 'ORCID') return true;
+  
+  // latin-america se conecta con casi todo excepto ORCID
+  if ((a === 'latin-america' || b === 'latin-america') && a !== 'ORCID' && b !== 'ORCID') return true;
 
   // awards conectado con photo y CV (no con conferences)
   if (a === 'awards' && b === 'conferences') return false;
@@ -343,7 +349,8 @@ cv.addEventListener('click', () => {
   if (hovered >= 0) {
     const n = nodes[hovered];
     console.log('Nodo clickeado:', n.label);
-    // Aquí es donde asociaremos las URLs o redirecciones en el futuro
+    // Aquí puedes agregar redirecciones o acciones específicas
+    alert(`Has hecho clic en: ${n.label}\n${n.desc}`);
   }
 });
 
