@@ -102,7 +102,7 @@
 const NODES = [
   { id: 'biography', label: 'biography', desc: 'Breve perfil académico y líneas de interés.', x: 0.15, y: 0.20 },
   { id: 'CV', label: 'CV', desc: 'Currículum Vitae tradicional en formato descargable.', x: 0.12, y: 0.42 },
-  { id: 'OR-CID', label: 'OR-CID', desc: 'Identificador digital de investigador científico.', x: 0.14, y: 0.65 },
+  { id: 'ORCID', label: 'ORCID', desc: 'Identificador digital de investigador científico.', x: 0.14, y: 0.65 },
   { id: 'awards', label: 'awards', desc: 'Reconocimientos, fondos y financiamientos obtenidos.', x: 0.28, y: 0.80 },
   { id: 'politics', label: 'politics', desc: 'Análisis político, gobernanza y esferas institucionales.', x: 0.45, y: 0.15 },
   { id: 'AI', label: 'AI', desc: 'Gobernanza de algoritmos, ética e impacto sociotécnico.', x: 0.68, y: 0.18 },
@@ -135,8 +135,8 @@ function explicitShouldConnect(id1, id2) {
   if (a === 'CV' && b === 'interviews') return true;
 
   // ORCID conectado con biography (bio) y con interviews
-  if (a === 'biography' && b === 'OR-CID') return true;
-  if (a === 'interviews' && b === 'OR-CID') return true;
+  if (a === 'biography' && b === 'ORCID') return true;
+  if (a === 'interviews' && b === 'ORCID') return true;
 
   // photo (fotos) conectado con essays (ensayo), politics y fieldwork
   if (a === 'essays' && b === 'photos') return true;
@@ -145,7 +145,7 @@ function explicitShouldConnect(id1, id2) {
 
   // conferences conectado con interviews y ORCID
   if (a === 'conferences' && b === 'interviews') return true;
-  if (a === 'conferences' && b === 'OR-CID') return true;
+  if (a === 'conferences' && b === 'ORCID') return true;
   if (a === 'CV' && b === 'conferences') return true; // (Requisito previo de CV)
 
   // exhibitions conectado con fieldwork y con AI (IA)
@@ -165,8 +165,8 @@ function explicitShouldConnect(id1, id2) {
 
   // biography e intereses globales (politics y latin-america se conectan con casi todo excepto ORCID)
   if (a === 'biography') return true;
-  if ((a === 'politics' || b === 'politics') && (a !== 'OR-CID' && b !== 'OR-CID')) return true;
-  if ((a === 'latin-america' || b === 'latin-america') && (a !== 'OR-CID' && b !== 'OR-CID')) return true;
+  if ((a === 'politics' || b === 'politics') && (a !== 'ORCID' && b !== 'ORCID')) return true;
+  if ((a === 'latin-america' || b === 'latin-america') && (a !== 'ORCID' && b !== 'ORCID')) return true;
 
   // awards conectado con photo y CV (no con conferences)
   if (a === 'awards' && b === 'conferences') return false;
