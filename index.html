@@ -137,7 +137,8 @@ function explicitShouldConnect(id1, id2) {
 
   // ✅ ORCID conectado con biography (bio) y con interviews (CORREGIDO)
   if ((a === 'biography' && b === 'ORCID') || (a === 'ORCID' && b === 'biography')) return true;
-  if ((a === 'interviews' && b === 'ORCID') || (a === 'ORCID' && b === 'interviews')) return true;
+  if ((a === 'papers' && b === 'ORCID') || (a === 'ORCID' && b === 'papers')) return true;
+  if ((a === 'CV' && b === 'ORCID') || (a === 'ORCID' && b === 'CV')) return true;
 
   // photo (fotos) conectado con essays (ensayo), politics y fieldwork
   if (a === 'essays' && b === 'photos') return true;
