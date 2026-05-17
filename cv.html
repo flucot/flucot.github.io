@@ -7,379 +7,207 @@
 
 <style>
 
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-body{
-  background:#fff;
-  font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
-  overflow:hidden;
-  height:100vh;
-  color:#111;
+body {
+  background: #fff;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  overflow: hidden;
+  height: 100vh;
+  color: #111;
 }
 
-/* ---------------- NAV ---------------- */
+/* ---- NAV ---- */
 
-nav{
-  position:fixed;
-  top:0;
-  left:0;
-  right:0;
-
-  height:42px;
-
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-
-  padding:0 28px;
-
-  background:#fff;
-
-  border-bottom:.5px solid rgba(0,0,0,.08);
-
-  z-index:100;
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  background: #fff;
+  border-bottom: .5px solid rgba(0,0,0,.08);
+  z-index: 100;
 }
 
-nav a{
-  font-size:9px;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-
-  color:#999;
-  text-decoration:none;
-
-  transition:.2s ease;
+nav a {
+  font-size: 9px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: #999;
+  text-decoration: none;
+  transition: .2s ease;
 }
 
-nav a:hover{
-  color:#111;
+nav a:hover { color: #111; }
+nav a.back::before { content: '← '; }
+
+/* ---- LAYOUT ---- */
+
+.outer {
+  position: fixed;
+  top: 42px; left: 0; right: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-nav a.back::before{
-  content:'← ';
+/* ---- CV AL CENTRO ---- */
+
+.cv-col {
+  position: relative;
+  z-index: 2;
+  width: min(34vw, 480px);
+  flex-shrink: 0;
 }
 
-/* ---------------- MAIN ---------------- */
-
-.outer{
-  position:fixed;
-
-  top:42px;
-  left:0;
-  right:0;
-  bottom:0;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  padding:16px 40px;
+.cv-embed-wrap {
+  width: 100%;
+  height: calc(100vh - 90px);
+  overflow: hidden;
+  border-radius: 2px;
 }
 
-/* ---------------- PDF ---------------- */
-
-.cv-col{
-  position:relative;
-
-  width:min(42vw, 620px);
-  height:100%;
-
-  display:flex;
-  align-items:center;
+.cv-embed-wrap embed {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
 }
 
-.cv-frame{
-  width:100%;
-  height:calc(100vh - 110px);
+/* ---- CAPA DE NOTAS (sobre todo) ---- */
 
-  object-fit:contain;
-
-  box-shadow:
-    0 2px 20px rgba(0,0,0,.05),
-    0 8px 40px rgba(0,0,0,.04);
+.notes-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
 }
 
-/* ---------------- NOTES ---------------- */
+/* ---- BLOQUE DE NOTA ---- */
 
-.notes-col{
-  position:absolute;
-  inset:0;
-  height:100%;
+.note {
+  position: absolute;
+  display: flex;
+  align-items: center;
 }
 
-/* ---------------- NODE SYSTEM ---------------- */
-
-.note-block{
-  position:absolute;
-
-  display:flex;
-  align-items:center;
-
-  pointer-events:none;
+/*
+  LEFT: bubble a la izquierda, brazo a la derecha (hacia el CV).
+  Flecha en el extremo izquierdo del brazo → apunta hacia el bubble (←).
+  DOM: [bubble][arm]
+*/
+.note.left {
+  left: 0;
+  flex-direction: row;
 }
 
-.note-block.left{
-  left:1.5%;
+/*
+  RIGHT: brazo a la izquierda (hacia el CV), bubble a la derecha.
+  Flecha en el extremo derecho del brazo → apunta hacia el bubble (→).
+  DOM: [arm][bubble]
+*/
+.note.right {
+  right: 0;
+  flex-direction: row;
 }
 
-.note-block.right{
-  right:1.5%;
+/* ---- BRAZO ---- */
+
+.note-arm {
+  width: 90px;
+  height: 1.5px;
+  background: #111;
+  flex-shrink: 0;
+  position: relative;
 }
 
-.note-block.left .note-line{
-  transform-origin:left center;
+/* Flecha izquierda: punta en el extremo izquierdo del brazo (← hacia bubble) */
+.note.left .note-arm::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: -4px;
+  width: 9px;
+  height: 9px;
+  border-bottom: 1.5px solid #111;
+  border-left: 1.5px solid #111;
+  transform: rotate(45deg);
 }
 
-.note-block.left .note-line::after{
-  right:auto;
-  left:-2px;
-
-  border-top:none;
-  border-right:none;
-  border-bottom:1.5px solid #111;
-  border-left:1.5px solid #111;
+/* Flecha derecha: punta en el extremo derecho del brazo (→ hacia bubble) */
+.note.right .note-arm::after {
+  content: '';
+  position: absolute;
+  right: -1px;
+  top: -4px;
+  width: 9px;
+  height: 9px;
+  border-top: 1.5px solid #111;
+  border-right: 1.5px solid #111;
+  transform: rotate(45deg);
 }
 
-.note-block.right .note-line{
-  transform-origin:right center;
+/* ---- BUBBLE ORGÁNICO ---- */
+
+.note-bubble {
+  width: 200px;
+  min-height: 150px;
+  border: 1.15px solid rgba(0,0,0,.92);
+  border-radius: 52% 48% 49% 51% / 51% 49% 53% 47%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 22px 18px;
+  font-size: 15px;
+  line-height: 1.45;
+  letter-spacing: .04em;
+  color: #111;
+  flex-shrink: 0;
 }
 
-.note-block.left .note-circle{
-  margin-left:0;
-  margin-right:12px;
+/* ---- ANIMACIONES ---- */
+
+@keyframes floatA {
+  0%   { transform: translateY(0px) rotate(0deg); }
+  100% { transform: translateY(-7px) rotate(-.4deg); }
+}
+@keyframes floatB {
+  0%   { transform: translateY(0px) rotate(0deg); }
+  100% { transform: translateY(-9px) rotate(.45deg); }
+}
+@keyframes floatC {
+  0%   { transform: translateY(0px) rotate(0deg); }
+  100% { transform: translateY(-6px) rotate(-.25deg); }
+}
+@keyframes floatD {
+  0%   { transform: translateY(0px) rotate(0deg); }
+  100% { transform: translateY(-8px) rotate(.3deg); }
 }
 
-.note-block.right .note-circle{
-  margin-left:12px;
-  margin-right:0;
+#n1 { top: 8%;  animation: floatA 3.8s ease-in-out infinite alternate; }
+#n2 { top: 28%; animation: floatB 4.4s ease-in-out infinite alternate; animation-delay: -.9s; }
+#n3 { top: 52%; animation: floatC 5.0s ease-in-out infinite alternate; animation-delay: -2.1s; }
+#n4 { top: 72%; animation: floatD 4.1s ease-in-out infinite alternate; animation-delay: -.5s; }
+
+/* ---- RESPONSIVE ---- */
+
+@media (max-width: 1100px) {
+  .cv-col { width: min(44vw, 500px); }
+  .note-arm { width: 60px; }
+  .note-bubble { width: 160px; min-height: 120px; font-size: 13px; padding: 18px 14px; }
 }
 
-.note-block.right{
-}
-
-/* ---------------- STRAIGHT FLOATING LINES ---------------- */
-
-.note-line{
-  width:90px;
-  height:1.5px;
-
-  background:#111;
-
-  opacity:.9;
-
-  transform-origin:left center;
-
-  animation-name:floatLine;
-  animation-timing-function:ease-in-out;
-  animation-iteration-count:infinite;
-  animation-direction:alternate;
-}
-
-.note-line::after{
-  content:'';
-
-  position:absolute;
-  right:-2px;
-  top:-3px;
-
-  width:10px;
-  height:10px;
-
-  border-top:1.5px solid #111;
-  border-right:1.5px solid #111;
-
-  transform:rotate(45deg);
-}
-
-/* independent motion */
-
-#n1 .note-line{
-  animation-duration:3.7s;
-  animation-delay:0s;
-}
-
-#n2 .note-line{
-  animation-duration:4.4s;
-  animation-delay:-1.2s;
-}
-
-#n3 .note-line{
-  animation-duration:5.1s;
-  animation-delay:-2s;
-}
-
-#n4 .note-line{
-  animation-duration:4s;
-  animation-delay:-0.6s;
-}
-
-@keyframes floatLine{
-  0%{
-    transform:
-      translateX(0px)
-      translateY(0px)
-      rotate(0deg);
-  }
-
-  100%{
-    transform:
-      translateX(-5px)
-      translateY(-4px)
-      rotate(-0.3deg);
-  }
-}
-
-/* ---------------- ORGANIC COMMENTS ---------------- */
-
-.note-circle{
-  position:relative;
-
-  width:210px;
-  min-height:170px;
-
-  margin-left:18px;
-
-  border:1.15px solid rgba(0,0,0,.92);
-
-  border-radius:
-    52% 48% 49% 51% /
-    51% 49% 53% 47%;
-
-  background:transparent;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  text-align:center;
-
-  padding:20px;
-
-  animation-name:floatCircle;
-  animation-timing-function:ease-in-out;
-  animation-iteration-count:infinite;
-  animation-direction:alternate;
-}
-
-/* each node floats differently */
-
-#n1 .note-circle{
-  animation-duration:3.4s;
-  animation-delay:0s;
-}
-
-#n2 .note-circle{
-  animation-duration:4.1s;
-  animation-delay:-1.1s;
-}
-
-#n3 .note-circle{
-  animation-duration:4.7s;
-  animation-delay:-2.1s;
-}
-
-#n4 .note-circle{
-  animation-duration:3.8s;
-  animation-delay:-0.8s;
-}
-
-@keyframes floatCircle{
-  0%{
-    transform:
-      translateY(0px)
-      rotate(0deg);
-  }
-
-  100%{
-    transform:
-      translateY(-7px)
-      rotate(-0.45deg);
-  }
-}
-
-/* ---------------- TEXT ---------------- */
-
-.note-text{
-  font-size:16px;
-  line-height:1.45;
-
-  letter-spacing:.04em;
-
-  animation:textFloat 5s ease-in-out infinite alternate;
-}
-
-@keyframes textFloat{
-  0%{
-    transform:translateY(0px);
-  }
-
-  100%{
-    transform:translateY(-1.5px);
-  }
-}
-
-/* ---------------- POSITIONS ---------------- */
-
-#n1{
-  top:10%;
-}
-
-#n2{
-  top:30%;
-}
-
-#n3{
-  top:53%;
-}
-
-#n4{
-  top:74%;
-}
-
-@media (max-width: 1200px){
-  .cv-col{
-    width:min(52vw, 640px);
-  }
-
-  .note-block.left{
-    left:1%;
-  }
-
-  .note-block.right{
-    right:1%;
-  }
-
-  .note-line{
-    width:70px;
-  }
-
-  .note-circle{
-    width:90px;
-    min-height:140px;
-    padding:16px;
-  }
-
-  .note-text{
-    font-size:13px;
-  }
-}
-
-@media (max-width: 900px){
-  .notes-col{
-    display:none;
-  }
-
-  .cv-col{
-    width:min(92vw, 760px);
-  }
-
-  .cv-frame{
-    height:calc(100vh - 76px);
-  }
+@media (max-width: 800px) {
+  .notes-layer { display: none; }
+  .cv-col { width: min(88vw, 600px); }
 }
 
 </style>
@@ -394,85 +222,42 @@ nav a.back::before{
 
 <div class="outer">
 
-  <!-- PDF -->
-
+  <!-- CV CENTRADO -->
   <div class="cv-col">
-
-    <!-- cambia cv.pdf por tu archivo -->
-
-    <img
-      class="cv-frame"
-      src="CV-preview.jpg"
-      alt="CV preview"
-    />
-
+    <div class="cv-embed-wrap">
+      <!-- cambia cv.pdf por tu archivo -->
+      <embed
+        src="cv.pdf#toolbar=0&navpanes=0&scrollbar=0&statusbar=0&view=FitH"
+        type="application/pdf"
+      />
+    </div>
   </div>
 
-  <!-- NOTES -->
+  <!-- NOTAS -->
+  <div class="notes-layer">
 
-  <div class="notes-col">
-
-    <!-- NOTE 1 -->
-
-    <div class="note-block left" id="n1">
-
-      <div class="note-line"></div>
-
-      <div class="note-circle">
-        <div class="note-text">
-          I'm based in Paris.
-        </div>
-      </div>
-
+    <!-- N1: izquierda — [bubble][←arm] -->
+    <div class="note left" id="n1">
+      <div class="note-bubble">I'm based in Paris.</div>
+      <div class="note-arm"></div>
     </div>
 
-    <!-- NOTE 2 -->
-
-    <div class="note-block right" id="n2">
-
-      <div class="note-line"></div>
-
-      <div class="note-circle">
-        <div class="note-text">
-          I have publish a
-          couple of papers,
-          and now i'm doing my 
-          masters.
-        </div>
-      </div>
-
+    <!-- N2: derecha — [arm→][bubble] -->
+    <div class="note right" id="n2">
+      <div class="note-arm"></div>
+      <div class="note-bubble">I have published a couple of papers, and now I'm doing my masters.</div>
     </div>
 
-    <!-- NOTE 3 -->
-
-    <div class="note-block left" id="n3">
-
-      <div class="note-line"></div>
-
-      <div class="note-circle">
-        <div class="note-text">
-          My practice spans between
-          AI, latin-america,
-          and knowledge production.
-        </div>
-      </div>
-
+    <!-- N3: izquierda — [bubble][←arm] -->
+    <div class="note left" id="n3">
+      <div class="note-bubble">My practice spans AI, Latin America, and knowledge production.</div>
+      <div class="note-arm"></div>
     </div>
 
-    <!-- NOTE 4 -->
-
-    <div class="note-block right" id="n4">
-
-      <div class="note-line"></div>
-
-      <div class="note-circle">
-        <div class="note-text">
-          I was very interested in
-          economics during my bachelor's
-          and shortly after it.
-        </div>
-      </div>
-
+    <!-- N4: derecha — [arm→][bubble] -->
+    <div class="note right" id="n4">
+      <div class="note-arm"></div>
+      <div class="note-bubble">I was very interested in economics during my bachelor's.</div>
     </div>
 
   </div>
