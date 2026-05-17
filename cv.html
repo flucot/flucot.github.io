@@ -75,8 +75,9 @@ nav a.back::before{
 
   display:flex;
   align-items:center;
+  justify-content:center;
 
-  padding:18px 36px 18px 42px;
+  padding:16px 40px;
 }
 
 /* ---------------- PDF ---------------- */
@@ -84,7 +85,7 @@ nav a.back::before{
 .cv-col{
   position:relative;
 
-  width:52vw;
+  width:min(42vw, 620px);
   height:100%;
 
   display:flex;
@@ -93,7 +94,7 @@ nav a.back::before{
 
 .cv-frame{
   width:100%;
-  height:calc(100vh - 78px);
+  height:calc(100vh - 110px);
 
   border:none;
 
@@ -105,9 +106,8 @@ nav a.back::before{
 /* ---------------- NOTES ---------------- */
 
 .notes-col{
-  position:relative;
-
-  flex:1;
+  position:absolute;
+  inset:0;
   height:100%;
 }
 
@@ -120,6 +120,37 @@ nav a.back::before{
   align-items:center;
 
   pointer-events:none;
+}
+
+.note-block.left{
+  left:calc(50% - 560px);
+}
+
+.note-block.right{
+  right:calc(50% - 560px);
+}
+
+.note-block.right .note-line{
+  transform-origin:right center;
+}
+
+.note-block.right .note-line::after{
+  right:auto;
+  left:-2px;
+
+  border-top:none;
+  border-right:none;
+  border-bottom:1.5px solid #111;
+  border-left:1.5px solid #111;
+}
+
+.note-block.right .note-circle{
+  margin-left:0;
+  margin-right:18px;
+}
+
+.note-block.right{
+  flex-direction:row-reverse;
 }
 
 /* ---------------- STRAIGHT FLOATING LINES ---------------- */
@@ -199,8 +230,8 @@ nav a.back::before{
 .note-circle{
   position:relative;
 
-  width:132px;
-  height:132px;
+  width:210px;
+  min-height:170px;
 
   margin-left:18px;
 
@@ -221,7 +252,7 @@ nav a.back::before{
 
   text-align:center;
 
-  padding:16px;
+  padding:20px;
 
   animation-name:floatCircle;
   animation-timing-function:ease-in-out;
@@ -268,8 +299,8 @@ nav a.back::before{
 /* ---------------- TEXT ---------------- */
 
 .note-text{
-  font-size:9.4px;
-  line-height:1.55;
+  font-size:16px;
+  line-height:1.45;
 
   letter-spacing:.04em;
 
@@ -290,22 +321,60 @@ nav a.back::before{
 
 #n1{
   top:10%;
-  left:2%;
 }
 
 #n2{
-  top:34%;
-  left:7%;
+  top:30%;
 }
 
 #n3{
-  top:59%;
-  left:0%;
+  top:53%;
 }
 
 #n4{
-  top:80%;
-  left:8%;
+  top:74%;
+}
+
+@media (max-width: 1200px){
+  .cv-col{
+    width:min(52vw, 640px);
+  }
+
+  .note-block.left{
+    left:2%;
+  }
+
+  .note-block.right{
+    right:2%;
+  }
+
+  .note-line{
+    width:120px;
+  }
+
+  .note-circle{
+    width:170px;
+    min-height:140px;
+    padding:16px;
+  }
+
+  .note-text{
+    font-size:13px;
+  }
+}
+
+@media (max-width: 900px){
+  .notes-col{
+    display:none;
+  }
+
+  .cv-col{
+    width:min(92vw, 760px);
+  }
+
+  .cv-frame{
+    height:calc(100vh - 76px);
+  }
 }
 
 </style>
@@ -328,7 +397,7 @@ nav a.back::before{
 
     <iframe
       class="cv-frame"
-      src="CV.pdf"
+      src="CV.pdf#view=FitH"
     ></iframe>
 
   </div>
@@ -339,7 +408,7 @@ nav a.back::before{
 
     <!-- NOTE 1 -->
 
-    <div class="note-block" id="n1">
+    <div class="note-block left" id="n1">
 
       <div class="note-line"></div>
 
@@ -353,7 +422,7 @@ nav a.back::before{
 
     <!-- NOTE 2 -->
 
-    <div class="note-block" id="n2">
+    <div class="note-block right" id="n2">
 
       <div class="note-line"></div>
 
@@ -370,7 +439,7 @@ nav a.back::before{
 
     <!-- NOTE 3 -->
 
-    <div class="note-block" id="n3">
+    <div class="note-block left" id="n3">
 
       <div class="note-line"></div>
 
@@ -386,7 +455,7 @@ nav a.back::before{
 
     <!-- NOTE 4 -->
 
-    <div class="note-block" id="n4">
+    <div class="note-block right" id="n4">
 
       <div class="note-line"></div>
 
