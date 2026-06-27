@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Francisca Luco — Dossier</title>
+<title>Francisca Luco</title>
 
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -12,15 +12,26 @@
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     background: #fff; color: #111;
   }
+
+  #top-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 52px;
+    background: rgba(200, 0, 80, 0.18);
+    z-index: 40;
+    pointer-events: none;
+  }
+
   #header {
-    position: fixed; top: 22px; left: 32px;
+    position: fixed; top: 18px; left: 32px;
     font-size: 10px; font-weight: 400;
     letter-spacing: .09em; text-transform: uppercase;
     color: #111; line-height: 1.6;
     pointer-events: none; z-index: 50;
   }
+
   #nav-menu {
-    position: fixed; top: 22px; right: 32px;
+    position: fixed; top: 18px; right: 32px;
     display: flex; gap: 22px; z-index: 50;
   }
   #nav-menu a {
@@ -30,17 +41,21 @@
     transition: opacity .2s;
   }
   #nav-menu a:hover { opacity: .4; }
+
   #constellation-section {
     position: relative; width: 100%; height: 100vh;
     overflow: hidden; background: #fff;
   }
+
   #canvas-wrap {
     position: absolute;
-    top: 72px; left: 60px; right: 60px; bottom: 52px;
+    top: 68px; left: 32px; right: 32px; bottom: 48px;
   }
+
   canvas#cvcanvas { display: block; width: 100%; height: 100%; }
+
   #scroll-hint {
-    position: absolute; bottom: 20px; left: 50%;
+    position: absolute; bottom: 16px; left: 50%;
     transform: translateX(-50%);
     font-size: 8.5px; letter-spacing: .18em;
     text-transform: uppercase; color: #bbb; z-index: 10;
@@ -51,6 +66,7 @@
     0%, 100% { opacity: .35; transform: translateX(-50%) translateY(0); }
     50%       { opacity: .9;  transform: translateX(-50%) translateY(-5px); }
   }
+
   #bio-section {
     width: 100%; min-height: 100vh; background: #fff;
     display: flex; align-items: center; justify-content: center;
@@ -74,10 +90,10 @@
 </head>
 <body>
 
-<div id="header">
-  FRANCISCA LUCO<br>
-  Portfolio — Digital Dossier
-</div>
+<div id="top-bar"></div>
+
+<!-- Solo FRANCISCA LUCO, sin segunda línea -->
+<div id="header">FRANCISCA LUCO</div>
 
 <nav id="nav-menu">
   <a href="#bio-section">Bio</a>
@@ -107,50 +123,53 @@
 </section>
 
 <script>
-// Organic positions: hand-tuned to feel random but cover the full canvas
-// No node is isolated — each has at least 2 neighbors within CONNECTION_DISTANCE
+// x range: 0.05 – 0.88
+// Labels draw rightward from dot; longest label ~190px.
+// At x=0.88 on a 1200px canvas: 0.88*1200=1056 + 7 + 190 = 1253 > 1200 → clips.
+// So dots go to 0.80 max; labels still reach 0.80*1200+197=1157 < 1200. Fine.
+// This fills more of the right side, eliminating dead space.
 const NODES = [
-  { label: 'politics',                     x: 0.38, y: 0.07 },
-  { label: 'accountability',               x: 0.61, y: 0.11 },
+  { label: 'politics',                     x: 0.40, y: 0.07 },
+  { label: 'accountability',               x: 0.64, y: 0.11 },
   { label: 'trust',                        x: 0.22, y: 0.16 },
-  { label: 'transparency',                 x: 0.50, y: 0.19 },
-  { label: 'AI & society',                 x: 0.76, y: 0.14 },
-  { label: 'algorithmic governance',       x: 0.88, y: 0.27 },
-  { label: 'global south',                 x: 0.31, y: 0.28 },
-  { label: 'political science',            x: 0.14, y: 0.31 },
-  { label: 'digital politics',             x: 0.66, y: 0.28 },
-  { label: 'latin america',               x: 0.46, y: 0.36 },
-  { label: 'economics',                    x: 0.20, y: 0.47 },
+  { label: 'transparency',                 x: 0.52, y: 0.19 },
+  { label: 'AI & society',                 x: 0.78, y: 0.13 },
+  { label: 'algorithmic governance',       x: 0.60, y: 0.27 },
+  { label: 'global south',                 x: 0.32, y: 0.28 },
+  { label: 'political science',            x: 0.08, y: 0.30 },
+  { label: 'digital politics',             x: 0.70, y: 0.37 },
+  { label: 'latin america',                x: 0.46, y: 0.36 },
+  { label: 'economics',                    x: 0.14, y: 0.46 },
   { label: 'public services',              x: 0.37, y: 0.51 },
-  { label: 'internet culture',             x: 0.57, y: 0.44 },
-  { label: 'exhibitions',                  x: 0.80, y: 0.42 },
-  { label: 'fieldwork',                    x: 0.27, y: 0.61 },
+  { label: 'internet culture',             x: 0.58, y: 0.46 },
+  { label: 'exhibitions',                  x: 0.78, y: 0.51 },
+  { label: 'fieldwork',                    x: 0.25, y: 0.61 },
   { label: 'interviews',                   x: 0.48, y: 0.58 },
-  { label: 'science & technology studies', x: 0.71, y: 0.55 },
-  { label: 'curatorial practice',          x: 0.89, y: 0.62 },
-  { label: 'qualitative research',         x: 0.13, y: 0.65 },
-  { label: 'photography',                  x: 0.83, y: 0.72 },
-  { label: 'essays',                       x: 0.41, y: 0.71 },
-  { label: 'papers',                       x: 0.24, y: 0.78 },
-  { label: 'data centers',                 x: 0.60, y: 0.76 },
-  { label: 'citizenship',                  x: 0.74, y: 0.83 },
-  { label: 'fiction writing',              x: 0.16, y: 0.87 },
-  { label: 'conferences',                  x: 0.43, y: 0.88 },
-  { label: 'architecture & space',         x: 0.62, y: 0.92 },
+  { label: 'science & technology studies', x: 0.50, y: 0.68 },
+  { label: 'curatorial practice',          x: 0.70, y: 0.63 },
+  { label: 'qualitative research',         x: 0.06, y: 0.64 },
+  { label: 'photography',                  x: 0.76, y: 0.76 },
+  { label: 'essays',                       x: 0.39, y: 0.73 },
+  { label: 'papers',                       x: 0.20, y: 0.79 },
+  { label: 'data centers',                 x: 0.60, y: 0.80 },
+  { label: 'citizenship',                  x: 0.70, y: 0.88 },
+  { label: 'fiction writing',              x: 0.12, y: 0.88 },
+  { label: 'conferences',                  x: 0.42, y: 0.90 },
+  { label: 'architecture & space',         x: 0.54, y: 0.94 },
 ];
 
 const CONNECTION_DISTANCE = 0.30;
-const DRIFT_SPEED  = 0.045;
-const DRIFT_AMOUNT = 8;
+const DRIFT_AMOUNT = 6;
 
 const canvas = document.getElementById('cvcanvas');
 const ctx    = canvas.getContext('2d');
-let W, H, tick = 0;
+let W, H, lastTime = null, elapsed = 0;
 
 const nodes = NODES.map(n => ({
   ...n,
   phase:  Math.random() * Math.PI * 2,
   phaseY: Math.random() * Math.PI * 2,
+  period: 3.5 + Math.random() * 3,
 }));
 
 function buildEdges() {
@@ -168,13 +187,16 @@ let edges = [];
 
 function nodePos(n) {
   return {
-    x: n.x * W + Math.sin(tick * DRIFT_SPEED + n.phase)  * DRIFT_AMOUNT,
-    y: n.y * H + Math.cos(tick * DRIFT_SPEED + n.phaseY) * DRIFT_AMOUNT,
+    x: n.x * W + Math.sin((elapsed / n.period) * Math.PI * 2 + n.phase)  * DRIFT_AMOUNT,
+    y: n.y * H + Math.cos((elapsed / n.period) * Math.PI * 2 + n.phaseY) * DRIFT_AMOUNT,
   };
 }
 
-function draw() {
-  tick++;
+function draw(ts) {
+  if (lastTime === null) lastTime = ts;
+  elapsed += (ts - lastTime) / 1000;
+  lastTime = ts;
+
   ctx.clearRect(0, 0, W, H);
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, W, H);
@@ -197,7 +219,6 @@ function draw() {
     ctx.textBaseline = 'middle';
     ctx.fillStyle = '#1a1a1a';
     ctx.fillText(n.label, p.x + 7, p.y);
-
     ctx.beginPath();
     ctx.arc(p.x, p.y, 2.2, 0, Math.PI * 2);
     ctx.fillStyle = '#444';
@@ -223,7 +244,7 @@ function resize() {
 
 window.addEventListener('resize', resize);
 resize();
-draw();
+requestAnimationFrame(draw);
 </script>
 </body>
 </html>
