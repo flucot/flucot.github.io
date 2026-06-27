@@ -7,126 +7,66 @@
 
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   html { scroll-behavior: smooth; }
-
   body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background: #fff;
-    color: #111;
+    background: #fff; color: #111;
   }
-
-  /* ── SECTION 1: constellation ── */
-  #constellation-section {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-    background: #fff;
-  }
-
-  canvas#cvcanvas {
-    display: block;
-    position: absolute;
-    top: 0; left: 0;
-  }
-
-  /* Header top-left — same margins as original */
   #header {
-    position: fixed;
-    top: 18px;
-    left: 22px;
-    font-size: 10px;
-    font-weight: 400;
-    letter-spacing: .09em;
-    text-transform: uppercase;
-    color: #111;
-    line-height: 1.6;
-    pointer-events: none;
-    z-index: 50;
+    position: fixed; top: 22px; left: 32px;
+    font-size: 10px; font-weight: 400;
+    letter-spacing: .09em; text-transform: uppercase;
+    color: #111; line-height: 1.6;
+    pointer-events: none; z-index: 50;
   }
-
-  /* Nav menu top-right — same margin as header */
   #nav-menu {
-    position: fixed;
-    top: 18px;
-    right: 22px;
-    display: flex;
-    gap: 22px;
-    z-index: 50;
+    position: fixed; top: 22px; right: 32px;
+    display: flex; gap: 22px; z-index: 50;
   }
-
   #nav-menu a {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: .09em;
-    text-transform: uppercase;
-    color: #111;
-    text-decoration: none;
-    line-height: 1.6;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: .09em; text-transform: uppercase;
+    color: #111; text-decoration: none; line-height: 1.6;
     transition: opacity .2s;
   }
   #nav-menu a:hover { opacity: .4; }
-
-  /* Scroll hint */
-  #scroll-hint {
+  #constellation-section {
+    position: relative; width: 100%; height: 100vh;
+    overflow: hidden; background: #fff;
+  }
+  #canvas-wrap {
     position: absolute;
-    bottom: 28px;
-    left: 50%;
+    top: 72px; left: 60px; right: 60px; bottom: 52px;
+  }
+  canvas#cvcanvas { display: block; width: 100%; height: 100%; }
+  #scroll-hint {
+    position: absolute; bottom: 20px; left: 50%;
     transform: translateX(-50%);
-    font-size: 8.5px;
-    letter-spacing: .18em;
-    text-transform: uppercase;
-    color: #aaa;
-    z-index: 10;
-    animation: fadeUpDown 2.2s ease-in-out infinite;
+    font-size: 8.5px; letter-spacing: .18em;
+    text-transform: uppercase; color: #bbb; z-index: 10;
+    animation: fadeUpDown 2.4s ease-in-out infinite;
     pointer-events: none;
   }
   @keyframes fadeUpDown {
-    0%, 100% { opacity: .4; transform: translateX(-50%) translateY(0); }
-    50%       { opacity: 1;  transform: translateX(-50%) translateY(-5px); }
+    0%, 100% { opacity: .35; transform: translateX(-50%) translateY(0); }
+    50%       { opacity: .9;  transform: translateX(-50%) translateY(-5px); }
   }
-
-  /* ── SECTION 2: bio ── */
   #bio-section {
-    width: 100%;
-    min-height: 100vh;
-    background: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 80px 40px;
+    width: 100%; min-height: 100vh; background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    padding: 100px 80px;
   }
-
-  .bio-inner {
-    max-width: 520px;
-    width: 100%;
-  }
-
+  .bio-inner { max-width: 640px; width: 100%; }
   .bio-text {
-    font-size: 13px;
-    font-weight: 400;
-    letter-spacing: .04em;
-    line-height: 1.9;
-    color: #111;
+    font-size: 20px; font-weight: 400;
+    letter-spacing: -.01em; line-height: 1.65; color: #111;
   }
-
-  .bio-links {
-    display: flex;
-    gap: 24px;
-    flex-wrap: wrap;
-    margin-top: 36px;
-  }
-
+  .bio-links { display: flex; gap: 28px; flex-wrap: wrap; margin-top: 52px; }
   .bio-link {
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: .14em;
-    text-transform: uppercase;
-    color: #111;
-    text-decoration: none;
-    border-bottom: 0.5px solid #111;
-    padding-bottom: 2px;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: .14em; text-transform: uppercase;
+    color: #111; text-decoration: none;
+    border-bottom: 0.5px solid #111; padding-bottom: 2px;
     transition: opacity .2s;
   }
   .bio-link:hover { opacity: .4; }
@@ -134,13 +74,11 @@
 </head>
 <body>
 
-<!-- ── FIXED HEADER left ── -->
 <div id="header">
   FRANCISCA LUCO<br>
   Portfolio — Digital Dossier
 </div>
 
-<!-- ── FIXED NAV right ── -->
 <nav id="nav-menu">
   <a href="#bio-section">Bio</a>
   <a href="#">Statement</a>
@@ -148,13 +86,13 @@
   <a href="mailto:francisca.luco@sciencespo.fr">Contact</a>
 </nav>
 
-<!-- ── SECTION 1: CONSTELLATION ── -->
 <section id="constellation-section">
-  <canvas id="cvcanvas"></canvas>
+  <div id="canvas-wrap">
+    <canvas id="cvcanvas"></canvas>
+  </div>
   <div id="scroll-hint">scroll</div>
 </section>
 
-<!-- ── SECTION 2: BIO ── -->
 <section id="bio-section">
   <div class="bio-inner">
     <p class="bio-text">
@@ -169,66 +107,45 @@
 </section>
 
 <script>
-
-// ═══════════════════════════════════════════
-// NODOS TEMÁTICOS — puramente decorativos
-// ═══════════════════════════════════════════
-
+// Organic positions: hand-tuned to feel random but cover the full canvas
+// No node is isolated — each has at least 2 neighbors within CONNECTION_DISTANCE
 const NODES = [
-  { id: 'politics',                     label: 'politics',                     x: 0.44, y: 0.13 },
-  { id: 'AI',                           label: 'AI & society',                 x: 0.67, y: 0.17 },
-  { id: 'latin-america',                label: 'latin america',                x: 0.52, y: 0.32 },
-  { id: 'fieldwork',                    label: 'fieldwork',                    x: 0.36, y: 0.50 },
-  { id: 'interviews',                   label: 'interviews',                   x: 0.59, y: 0.46 },
-  { id: 'papers',                       label: 'papers',                       x: 0.33, y: 0.68 },
-  { id: 'essays',                       label: 'essays',                       x: 0.57, y: 0.66 },
-  { id: 'conferences',                  label: 'conferences',                  x: 0.46, y: 0.85 },
-  { id: 'exhibitions',                  label: 'exhibitions',                  x: 0.84, y: 0.26 },
-  { id: 'algorithmic-governance',       label: 'algorithmic governance',       x: 0.20, y: 0.28 },
-  { id: 'public-services',              label: 'public services',              x: 0.28, y: 0.42 },
-  { id: 'digital-politics',             label: 'digital politics',             x: 0.74, y: 0.38 },
-  { id: 'qualitative-research',         label: 'qualitative research',         x: 0.22, y: 0.60 },
-  { id: 'sts',                          label: 'science & technology studies', x: 0.72, y: 0.58 },
-  { id: 'political-science',            label: 'political science',            x: 0.12, y: 0.18 },
-  { id: 'economics',                    label: 'economics',                    x: 0.14, y: 0.75 },
-  { id: 'curatorial-practice',          label: 'curatorial practice',          x: 0.86, y: 0.68 },
-  { id: 'data-centers',                 label: 'data centers',                 x: 0.62, y: 0.80 },
-  { id: 'architecture',                 label: 'architecture & space',         x: 0.78, y: 0.84 },
-  { id: 'photography',                  label: 'photography',                  x: 0.88, y: 0.46 },
-  { id: 'global-south',                 label: 'global south',                 x: 0.40, y: 0.22 },
-  { id: 'fiction-writing',              label: 'fiction writing',              x: 0.18, y: 0.88 },
-  { id: 'transparency',                 label: 'transparency',                 x: 0.56, y: 0.12 },
-  { id: 'accountability',               label: 'accountability',               x: 0.78, y: 0.10 },
-  { id: 'trust',                        label: 'trust',                        x: 0.32, y: 0.14 },
-  { id: 'citizenship',                  label: 'citizenship',                  x: 0.82, y: 0.76 },
-  { id: 'internet-culture',             label: 'internet culture',             x: 0.50, y: 0.56 },
+  { label: 'politics',                     x: 0.38, y: 0.07 },
+  { label: 'accountability',               x: 0.61, y: 0.11 },
+  { label: 'trust',                        x: 0.22, y: 0.16 },
+  { label: 'transparency',                 x: 0.50, y: 0.19 },
+  { label: 'AI & society',                 x: 0.76, y: 0.14 },
+  { label: 'algorithmic governance',       x: 0.88, y: 0.27 },
+  { label: 'global south',                 x: 0.31, y: 0.28 },
+  { label: 'political science',            x: 0.14, y: 0.31 },
+  { label: 'digital politics',             x: 0.66, y: 0.28 },
+  { label: 'latin america',               x: 0.46, y: 0.36 },
+  { label: 'economics',                    x: 0.20, y: 0.47 },
+  { label: 'public services',              x: 0.37, y: 0.51 },
+  { label: 'internet culture',             x: 0.57, y: 0.44 },
+  { label: 'exhibitions',                  x: 0.80, y: 0.42 },
+  { label: 'fieldwork',                    x: 0.27, y: 0.61 },
+  { label: 'interviews',                   x: 0.48, y: 0.58 },
+  { label: 'science & technology studies', x: 0.71, y: 0.55 },
+  { label: 'curatorial practice',          x: 0.89, y: 0.62 },
+  { label: 'qualitative research',         x: 0.13, y: 0.65 },
+  { label: 'photography',                  x: 0.83, y: 0.72 },
+  { label: 'essays',                       x: 0.41, y: 0.71 },
+  { label: 'papers',                       x: 0.24, y: 0.78 },
+  { label: 'data centers',                 x: 0.60, y: 0.76 },
+  { label: 'citizenship',                  x: 0.74, y: 0.83 },
+  { label: 'fiction writing',              x: 0.16, y: 0.87 },
+  { label: 'conferences',                  x: 0.43, y: 0.88 },
+  { label: 'architecture & space',         x: 0.62, y: 0.92 },
 ];
 
-
-// ═══════════════════════════════════════════
-// CONEXIONES — por proximidad, igual que el original
-// ═══════════════════════════════════════════
-
-const CONNECTION_DISTANCE = 0.28;
-
-
-// ═══════════════════════════════════════════
-// CONFIG — mismos valores que el original
-// ═══════════════════════════════════════════
-
+const CONNECTION_DISTANCE = 0.30;
 const DRIFT_SPEED  = 0.045;
 const DRIFT_AMOUNT = 8;
 
-
-// ═══════════════════════════════════════════
-// ENGINE — idéntico al original
-// ═══════════════════════════════════════════
-
 const canvas = document.getElementById('cvcanvas');
 const ctx    = canvas.getContext('2d');
-
-let W, H;
-let tick = 0;
+let W, H, tick = 0;
 
 const nodes = NODES.map(n => ({
   ...n,
@@ -247,7 +164,6 @@ function buildEdges() {
   }
   return out;
 }
-
 let edges = [];
 
 function nodePos(n) {
@@ -263,11 +179,9 @@ function draw() {
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, W, H);
 
-  // ─── Líneas de Conexión ───────────────────
   edges.forEach(([i, j]) => {
     const a = nodePos(nodes[i]);
     const b = nodePos(nodes[j]);
-
     ctx.beginPath();
     ctx.moveTo(a.x, a.y);
     ctx.lineTo(b.x, b.y);
@@ -276,10 +190,8 @@ function draw() {
     ctx.stroke();
   });
 
-  // ─── Etiquetas y Puntos ───────────────────
   nodes.forEach(n => {
     const p = nodePos(n);
-
     ctx.font = `13px 'Helvetica Neue', Helvetica, Arial, sans-serif`;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
@@ -295,38 +207,23 @@ function draw() {
   requestAnimationFrame(draw);
 }
 
-
-// ═══════════════════════════════════════════
-// AJUSTE DE PANTALLA (RETINA / HIGH DPI)
-// ═══════════════════════════════════════════
-
 function resize() {
-  const section = document.getElementById('constellation-section');
-  W = section.clientWidth;
-  H = section.clientHeight;
-
+  const wrap = document.getElementById('canvas-wrap');
+  const rect  = wrap.getBoundingClientRect();
+  W = rect.width;
+  H = rect.height;
   const dpr = window.devicePixelRatio || 1;
-
   canvas.width  = W * dpr;
   canvas.height = H * dpr;
   canvas.style.width  = W + 'px';
   canvas.style.height = H + 'px';
-
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
   edges = buildEdges();
 }
 
 window.addEventListener('resize', resize);
-
-
-// ═══════════════════════════════════════════
-// INICIALIZACIÓN
-// ═══════════════════════════════════════════
-
 resize();
 draw();
-
 </script>
 </body>
 </html>
